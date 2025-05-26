@@ -285,3 +285,70 @@ function validateSeparate() {
 
     resultDiv.innerText = xorSteps;
 }
+
+function xorChars(a, b) {
+    return a.charCodeAt(0) ^ b.charCodeAt(0);
+}
+
+function simulateBCC() {
+    const input = document
+        .getElementById("inputData")
+        .value;
+    const errors = document
+        .getElementById("errorPositions")
+        .value
+        .split(',')
+        .map(e => parseInt(e.trim()));
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "";
+
+    if (input.length !== 3) {
+        resultDiv.innerHTML = '<p class="text-red-500">Masukkan harus terdiri dari tepat 3 karakter.</p>';
+        return;
+    }
+
+    // Hitung BCC
+    let bccChar = String.fromCharCode(
+        input.charCodeAt(0) ^ input.charCodeAt(1) ^ input.charCodeAt(2)
+    );
+    let dataWithBCC = input + bccChar;
+
+    // Simulasikan error
+    let corrupted = input.split("");
+    errors.forEach(pos => {
+        if (pos >= 0 && pos < corrupted.length) {
+            corrupted[pos] = String.fromCharCode(corrupted[pos].charCodeAt(0) + 3); // ubah dengan offset +3
+        }
+    });
+    corrupted = corrupted.join("") + bccChar;
+
+    // Hitung XOR dari data yang diterima
+    let xorTotal = 0;
+    for (let i = 0; i < corrupted.length; i++) {
+        xorTotal ^= corrupted.charCodeAt(i);
+    }
+
+    // Output
+    resultDiv.innerHTML = `
+        <div class="bg-gray-50 border p-4 rounded">
+          <p><strong>Data Asli:</strong> ${input}</p>
+          <p><strong>BCC:</strong> '${bccChar}' (ASCII: ${bccChar.charCodeAt(
+        0
+    )})</p>
+          <p><strong>Data + BCC:</strong> '${dataWithBCC}'</p>
+          <hr class="my-2">
+          <p><strong>Posisi Error:</strong> ${errors.join(
+        ', '
+    )}</p>
+          <p><strong>Data yang Diterima:</strong> '${corrupted}'</p>
+          <p><strong>Hasil XOR Total:</strong> ${xorTotal}</p>
+          <p class="mt-2 font-semibold ${xorTotal === 0
+        ? 'text-green-600'
+        : 'text-red-600'}">
+            ${xorTotal === 0
+            ? 'Tidak ada error terdeteksi (Padahal ada double error)'
+            : 'Terdeteksi ada error!'}
+          </p>
+        </div>
+      `;
+}
