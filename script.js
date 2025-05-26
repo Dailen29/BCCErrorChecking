@@ -243,3 +243,45 @@ function calculateBCC() {
     // Tampilkan proses validasi manual XOR
     showValidationProcess(text, bcc);
 }
+
+function validateSeparate() {
+    const data = document
+        .getElementById("separateData")
+        .value;
+    const bccChar = document
+        .getElementById("separateBCC")
+        .value;
+    const resultDiv = document.getElementById("separateResult");
+
+    if (!data || !bccChar || bccChar.length !== 1) {
+        resultDiv.innerText = "Harap masukkan data asli dan 1 karakter BCC.";
+        return;
+    }
+
+    let xorSteps = "";
+    let xorResult = 0;
+
+    for (let i = 0; i < data.length; i++) {
+        const ascii = data.charCodeAt(i);
+        xorSteps += `Char: '${data[i]}' → ASCII: ${ascii} → Binary: ${toBinary(ascii)}\n`;
+        xorResult ^= ascii;
+    }
+
+    const bccAscii = bccChar.charCodeAt(0);
+    xorSteps += `\nBCC Char: '${bccChar}' → ASCII: ${bccAscii} → Binary: ${toBinary(
+        bccAscii
+    )}\n`;
+
+    const finalResult = xorResult ^ bccAscii;
+    xorSteps += `\nXOR Semua → Binary: ${toBinary(xorResult)}\nXOR dengan BCC → ${toBinary(
+        finalResult
+    )}\n`;
+
+    if (finalResult === 0) {
+        xorSteps += `\n✅ Data VALID (hasil XOR = 0)`;
+    } else {
+        xorSteps += `\n❌ Terjadi ERROR (hasil XOR ≠ 0)`;
+    }
+
+    resultDiv.innerText = xorSteps;
+}
