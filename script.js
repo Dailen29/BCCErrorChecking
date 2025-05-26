@@ -201,14 +201,14 @@ function calculateBCC() {
 
     let tableHTML = `
     <table class="w-full table-auto border-collapse border mt-4">
-      <thead>
+    <thead>
         <tr class="bg-gray-200">
-          <th class="border px-4 py-2">Char</th>
-          <th class="border px-4 py-2">ASCII</th>
-          <th class="border px-4 py-2">Binary</th>
+        <th class="border px-4 py-2">Char</th>
+        <th class="border px-4 py-2">ASCII</th>
+        <th class="border px-4 py-2">Binary</th>
         </tr>
-      </thead>
-      <tbody>`;
+    </thead>
+    <tbody>`;
 
     let bcc = 0;
 
@@ -216,11 +216,11 @@ function calculateBCC() {
         const ascii = text.charCodeAt(i);
         const binary = toBinary(ascii);
         tableHTML += `
-      <tr class="text-center">
+    <tr class="text-center">
         <td class="border px-4 py-2">${text[i]}</td>
         <td class="border px-4 py-2">${ascii}</td>
         <td class="border px-4 py-2">${binary}</td>
-      </tr>`;
+    </tr>`;
         bcc ^= ascii;
     }
     tableHTML += `</tbody></table>`;
@@ -230,11 +230,11 @@ function calculateBCC() {
 
     const resultHTML = `
     <div class="mt-6 text-center text-lg">
-      <p><strong>BCC Character:</strong> '${bccChar}'</p>
-      <p><strong>Decimal:</strong> ${bcc}</p>
-      <p><strong>Binary:</strong> ${bccBinary}</p>
+    <p><strong>BCC Character:</strong> '${bccChar}'</p>
+    <p><strong>Decimal:</strong> ${bcc}</p>
+    <p><strong>Binary:</strong> ${bccBinary}</p>
     </div>
-  `;
+`;
 
     document
         .getElementById("output")
