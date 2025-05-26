@@ -143,3 +143,103 @@ function validateDataBCC() {
             .innerHTML = '<span class="text-red-600">❌ Error terdeteksi pada data!</span>';
     }
 }
+
+function toBinary(n) {
+    return n
+        .toString(2)
+        .padStart(8, '0');
+}
+
+// Fungsi baru untuk tampilkan proses validasi manual XOR
+function showValidationProcess(text, bcc) {
+    let steps = "";
+    let xorResult = 0;
+
+    // XOR semua karakter data
+    for (let i = 0; i < text.length; i++) {
+        const ascii = text.charCodeAt(i);
+        const binary = toBinary(ascii);
+        if (i === 0) {
+            steps += `${binary} (${text[i]})\n`;
+            xorResult = ascii;
+        } else {
+            steps += `XOR ${binary} (${text[i]})\n`;
+            xorResult ^= ascii;
+            steps += `= ${toBinary(xorResult)}\n\n`;
+        }
+    }
+
+    // XOR dengan BCC
+    const bccBinary = toBinary(bcc);
+    steps += `XOR ${bccBinary} (BCC)\n`;
+    xorResult ^= bcc;
+    steps += `= ${toBinary(xorResult)}\n\n`;
+
+    // Hasil akhir
+    steps += xorResult === 0
+        ? "Hasil XOR = 0 → Data Valid (Tidak ada error)"
+        : `Hasil XOR ≠ 0 → Data Error (Terjadi kesalahan)`;
+
+    document
+        .getElementById("validationProcess")
+        .textContent = steps;
+}
+
+function calculateBCC() {
+    const text = document
+        .getElementById("inputText")
+        .value;
+    if (!text) {
+        document
+            .getElementById("output")
+            .innerHTML = "";
+        document
+            .getElementById("validationProcess")
+            .textContent = "";
+        return;
+    }
+
+    let tableHTML = `
+    <table class="w-full table-auto border-collapse border mt-4">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border px-4 py-2">Char</th>
+          <th class="border px-4 py-2">ASCII</th>
+          <th class="border px-4 py-2">Binary</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+    let bcc = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        const ascii = text.charCodeAt(i);
+        const binary = toBinary(ascii);
+        tableHTML += `
+      <tr class="text-center">
+        <td class="border px-4 py-2">${text[i]}</td>
+        <td class="border px-4 py-2">${ascii}</td>
+        <td class="border px-4 py-2">${binary}</td>
+      </tr>`;
+        bcc ^= ascii;
+    }
+    tableHTML += `</tbody></table>`;
+
+    const bccChar = String.fromCharCode(bcc);
+    const bccBinary = toBinary(bcc);
+
+    const resultHTML = `
+    <div class="mt-6 text-center text-lg">
+      <p><strong>BCC Character:</strong> '${bccChar}'</p>
+      <p><strong>Decimal:</strong> ${bcc}</p>
+      <p><strong>Binary:</strong> ${bccBinary}</p>
+    </div>
+  `;
+
+    document
+        .getElementById("output")
+        .innerHTML = tableHTML + resultHTML;
+
+    // Tampilkan proses validasi manual XOR
+    showValidationProcess(text, bcc);
+}
