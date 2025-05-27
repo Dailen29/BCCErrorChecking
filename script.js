@@ -354,73 +354,81 @@ function simulateBCC() {
 }
 
 function calculateBCC(data) {
-      let xor = 0;
-      for (let i = 0; i < data.length; i++) {
+    let xor = 0;
+    for (let i = 0; i < data.length; i++) {
         xor ^= data.charCodeAt(i);
-      }
-      return xor;
     }
+    return xor;
+}
 
-    function simulateError(data, errorRate) {
-      let corrupted = '';
-      let errors = [];
+function simulateError(data, errorRate) {
+    let corrupted = '';
+    let errors = [];
 
-      for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         if (Math.random() < errorRate) {
-          const originalCharCode = data.charCodeAt(i);
-          const errorCharCode = originalCharCode ^ (1 << Math.floor(Math.random() * 8)); // flip a random bit
-          corrupted += String.fromCharCode(errorCharCode);
-          errors.push(i);
+            const originalCharCode = data.charCodeAt(i);
+            const errorCharCode = originalCharCode ^ (1 << Math.floor(Math.random() * 8)); // flip a random bit
+            corrupted += String.fromCharCode(errorCharCode);
+            errors.push(i);
         } else {
-          corrupted += data[i];
+            corrupted += data[i];
         }
-      }
-
-      return { corrupted, errors };
     }
 
-    function simulateTransmission() {
-      const input = document.getElementById('input').value;
-      const errorRate = parseFloat(document.getElementById('errorRate').value);
-      const resultDiv = document.getElementById('result');
+    return {corrupted, errors};
+}
 
-      if (!input || isNaN(errorRate)) {
+function simulateTransmission() {
+    const input = document
+        .getElementById('input')
+        .value;
+    const errorRate = parseFloat(document.getElementById('errorRate').value);
+    const resultDiv = document.getElementById('result');
+
+    if (!input || isNaN(errorRate)) {
         resultDiv.innerHTML = '<p class="text-red-600">Masukkan data dan tingkat error terlebih dahulu.</p>';
         return;
-      }
-
-      const bcc = calculateBCC(input);
-      const bccChar = String.fromCharCode(bcc);
-      const dataWithBCC = input + bccChar;
-
-      const { corrupted, errors } = simulateError(dataWithBCC, errorRate);
-      const xorTotal = calculateBCC(corrupted);
-
-      resultDiv.innerHTML = `
-        <div class="bg-gray-50 border border-gray-300 p-4 rounded space-y-3">
-          <h2 class="text-lg font-bold text-blue-600">🔼 Transmitter</h2>
-          <p><strong>Data Asli:</strong> <span class="text-gray-800">${input}</span></p>
-          <p><strong>BCC:</strong> '${bccChar}' (ASCII: ${bccChar.charCodeAt(0)})</p>
-          <p><strong>Data yang Dikirim:</strong> '${dataWithBCC}'</p>
-
-          <hr class="my-2 border-dashed">
-
-          <h2 class="text-lg font-bold text-yellow-600">📡 Proses Pengiriman</h2>
-          <p>Data dikirim dari Transmitter ke Receiver...</p>
-          <p><strong>Simulasi Error:</strong> ${
-            errors.length > 0 ? `<span class="text-red-600">Ya, pada posisi: ${errors.join(', ')}</span>` : '<span class="text-green-600">Tidak ada error yang disimulasikan.</span>'
-          }</p>
-
-          <hr class="my-2 border-dashed">
-
-          <h2 class="text-lg font-bold text-green-700">🔽 Receiver</h2>
-          <p><strong>Data yang Diterima:</strong> '${corrupted}'</p>
-          <p><strong>Hasil XOR Total:</strong> ${xorTotal}</p>
-          <p class="mt-2 font-semibold ${
-            xorTotal === 0 ? 'text-green-600' : 'text-red-600'
-          }">
-            ${xorTotal === 0 ? '✅ Data valid, tidak ada error yang terdeteksi.' : '❌ Error terdeteksi! Data telah rusak selama transmisi.'}
-          </p>
-        </div>
-      `;
     }
+
+    const bcc = calculateBCC(input);
+    const bccChar = String.fromCharCode(bcc);
+    const dataWithBCC = input + bccChar;
+
+    const {corrupted, errors} = simulateError(dataWithBCC, errorRate);
+    const xorTotal = calculateBCC(corrupted);
+
+    resultDiv.innerHTML = `
+        <div class="bg-gray-50 border border-gray-300 p-4 rounded space-y-3">
+        <h2 class="text-lg font-bold text-blue-600">🔼 Transmitter</h2>
+        <p><strong>Data Asli:</strong> <span class="text-gray-800">${input}</span></p>
+        <p><strong>BCC:</strong> '${bccChar}' (ASCII: ${bccChar.charCodeAt(
+        0
+    )})</p>
+        <p><strong>Data yang Dikirim:</strong> '${dataWithBCC}'</p>
+
+        <hr class="my-2 border-dashed">
+
+        <h2 class="text-lg font-bold text-yellow-600">📡 Proses Pengiriman</h2>
+        <p>Data dikirim dari Transmitter ke Receiver...</p>
+        <p><strong>Simulasi Error:</strong> ${
+    errors.length > 0
+        ? `<span class="text-red-600">Ya, pada posisi: ${errors.join(', ')}</span>`
+        : '<span class="text-green-600">Tidak ada error yang disimulasikan.</span>'}</p>
+
+        <hr class="my-2 border-dashed">
+
+        <h2 class="text-lg font-bold text-green-700">🔽 Receiver</h2>
+        <p><strong>Data yang Diterima:</strong> '${corrupted}'</p>
+        <p><strong>Hasil XOR Total:</strong> ${xorTotal}</p>
+        <p class="mt-2 font-semibold ${
+    xorTotal === 0
+        ? 'text-green-600'
+        : 'text-red-600'}">
+            ${xorTotal === 0
+            ? '✅ Data valid, tidak ada error yang terdeteksi.'
+            : '❌ Error terdeteksi! Data telah rusak selama transmisi.'}
+            </p>
+        </div>
+    `;
+}
