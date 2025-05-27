@@ -352,3 +352,67 @@ function simulateBCC() {
         </div>
     `;
 }
+
+function simulateTransmission() {
+    const input = document.getElementById("transmitInput").value;
+    const outputDiv = document.getElementById("transmitOutput");
+    if (!input) {
+        outputDiv.innerText = "Masukkan data terlebih dahulu.";
+        return;
+    }
+
+    let result = `🛰️ TRANSMITTER\n`;
+    let bcc = 0;
+
+    result += `Data Asli: "${input}"\n\n`;
+    result += `Langkah XOR:\n`;
+
+    for (let i = 0; i < input.length; i++) {
+        const ascii = input.charCodeAt(i);
+        const binary = toBinary(ascii);
+        if (i === 0) {
+            result += `${binary} (${input[i]})\n`;
+        } else {
+            result += `XOR ${binary} (${input[i]})\n`;
+            bcc ^= ascii;
+            result += `= ${toBinary(bcc)}\n\n`;
+        }
+        if (i === 0) bcc = ascii;
+    }
+
+    const bccBinary = toBinary(bcc);
+    const bccChar = String.fromCharCode(bcc);
+
+    result += `Hasil BCC: '${bccChar}' (Decimal: ${bcc}, Binary: ${bccBinary})\n`;
+    result += `\n📡 Data Dikirim: "${input + bccChar}" (data + BCC)\n\n`;
+
+    result += `📥 RECEIVER\nMenerima: "${input + bccChar}"\n\n`;
+    result += `Langkah Validasi XOR:\n`;
+
+    let xorResult = 0;
+    for (let i = 0; i < input.length; i++) {
+        const ascii = input.charCodeAt(i);
+        const binary = toBinary(ascii);
+        if (i === 0) {
+            result += `${binary} (${input[i]})\n`;
+            xorResult = ascii;
+        } else {
+            result += `XOR ${binary} (${input[i]})\n`;
+            xorResult ^= ascii;
+            result += `= ${toBinary(xorResult)}\n\n`;
+        }
+    }
+
+    // XOR dengan BCC
+    result += `XOR ${bccBinary} (BCC)\n`;
+    xorResult ^= bcc;
+    result += `= ${toBinary(xorResult)}\n\n`;
+
+    if (xorResult === 0) {
+        result += `✅ Data diterima dengan benar (tidak ada error).\n`;
+    } else {
+        result += `❌ Data rusak! (terjadi error saat transmisi)\n`;
+    }
+
+    outputDiv.innerText = result;
+}
