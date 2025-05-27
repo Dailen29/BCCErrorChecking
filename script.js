@@ -331,25 +331,26 @@ function simulateBCC() {
     // Output
     resultDiv.innerHTML = `
         <div class="bg-gray-50 border p-4 rounded">
-            <p><strong>Data Asli:</strong> ${input}</p>
-            <p><strong>BCC:</strong> '${bccChar}' (ASCII: ${bccChar.charCodeAt(
+          <p><strong>Data Asli:</strong> ${input}</p>
+          <p><strong>BCC:</strong> '${bccChar}' (ASCII: ${bccChar.charCodeAt(
         0
     )})</p>
-            <p><strong>Data + BCC:</strong> '${dataWithBCC}'</p>
-            <hr class="my-2">
-            <p><strong>Posisi Error:</strong> ${errors.join(
+          <p><strong>Data + BCC:</strong> '${dataWithBCC}'</p>
+          <hr class="my-2">
+          <p><strong>Posisi Error:</strong> ${errors.join(
         ', '
     )}</p>
-            <p><strong>Data yang Diterima:</strong> '${corrupted}'</p>
-            <p><strong>Hasil XOR Total:</strong> ${xorTotal}</p>
-            <p class="mt-2 font-semibold ${xorTotal === 0
+          <p><strong>Data yang Diterima:</strong> '${corrupted}'</p>
+          <p><strong>Hasil XOR Total:</strong> ${xorTotal}</p>
+          <p class="mt-2 font-semibold ${xorTotal === 0
         ? 'text-green-600'
         : 'text-red-600'}">
             ${xorTotal === 0
             ? 'Tidak ada error terdeteksi (Padahal ada double error)'
             : 'Terdeteksi ada error!'}
-            </p>
+          </p>
         </div>
+<<<<<<< HEAD
     `;
 }
 
@@ -431,4 +432,7 @@ function simulateTransmission() {
             </p>
         </div>
     `;
+=======
+      `;
+>>>>>>> parent of 21ef198 (push)
 }
