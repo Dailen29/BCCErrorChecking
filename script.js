@@ -432,7 +432,5 @@ function simulateTransmission() {
             </p>
         </div>
     `;
-=======
-      `;
->>>>>>> parent of 21ef198 (push)
+
 }
